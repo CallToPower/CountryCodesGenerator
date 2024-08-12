@@ -8,7 +8,7 @@ import javax.annotation.Generated;
  * - ISO3166-1-Alpha-3
  * - ISO3166-1-numeric
  */
-@Generated(value = "CountryCodes.py", date = "2020-04-03 10:06")
+@Generated(value = "CountryCodes.py", date = "2024-08-12 19:09")
 public enum CountryCodes {
 
     // @formatter:off

@@ -66,6 +66,7 @@ def generate_java_enum(country_codes, filename_template, generator_name='Generat
     logging.info('Generating java enum')
     replacement = ''
     errors = []
+    warnings = []
     logging.info('Reading from template file "{}"'.format(filename_template))
     with open(filename_template, 'r', encoding='utf-8') as templatefile:
         template = templatefile.read()
@@ -75,11 +76,19 @@ def generate_java_enum(country_codes, filename_template, generator_name='Generat
             try:
                 alpha2 = country_codes[country][key_alpha2]
                 alpha3 = country_codes[country][key_alpha3]
-                numeric = int(country_codes[country][key_numeric])
-                if country and alpha2 and alpha3 and numeric:
+                try:
+                    numeric = int(country_codes[country][key_numeric])
+                except ValueError:
+                    numeric = -1
+                if country and alpha2 and alpha3 and numeric and numeric >= 0:
                     replacement += '{}{}("{}", "{}", "{}", {}),\n'.format('' if first else '    ',
                                                                           alpha3, country, alpha2, alpha3, numeric)
                     first = False
+                else:
+                    warnings.append({
+                        'warning': 'Skipped because is empty',
+                        'entry': country_codes[country]
+                    })
             except ValueError as ve:
                 errors.append({
                     'error': ve,
@@ -88,7 +97,15 @@ def generate_java_enum(country_codes, filename_template, generator_name='Generat
                     'alpha3': country_codes[country][key_alpha3],
                     'numeric': country_codes[country][key_numeric]
                 })
+                break
         replacement += '    ;'
+
+        if warnings:
+            len_warn = len(warnings)
+            logging.error('{} Warning{} while processing data:'.format(
+                len_warn, 's' if len_warn != 1 else ''))
+            for c, warning in enumerate(warnings):
+                logging.warning('{} >>>> {}'.format(c + 1, warning))
 
         if errors:
             len_err = len(errors)

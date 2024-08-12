@@ -14,4 +14,8 @@ https://datahub.io/core/country-codes
 
 ## Copyright
 
-2019-2020 Denis Meyer
+### Data - country-codes.csv
+Open Data Commons Public Domain Dedication and License v1.0
+
+### Program
+2019-2024 Denis Meyer
